@@ -22,9 +22,12 @@ def predict_image(image_path):
     image = image / 255.0 
     image = np.expand_dims(image, axis=0)
 
-    predictions = model.predict(image)
-    predicted_label = np.argmax(predictions)
-    return categories[predicted_label]
+    predictions = model.predict(image)[0]  # Ambil array hasil prediksi
+    predicted_index = np.argmax(predictions)
+    confidence = float(predictions[predicted_index]) * 100  # Skala ke persen
+
+    return categories[predicted_index], confidence
+
 
 @app.route("/", methods=["GET", "POST"])
 def upload_file():
@@ -41,9 +44,9 @@ def upload_file():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
-        prediction = predict_image(file_path)
+        prediction, confidence = predict_image(file_path)
 
-        return render_template("index.html", filename=filename, prediction=prediction)
+        return render_template("index.html", filename=filename, prediction=prediction, confidence=confidence)
 
     return render_template("index.html")
 

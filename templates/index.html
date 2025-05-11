@@ -37,8 +37,10 @@
         {% if filename %}
         <h3>Hasil Prediksi</h3>
         <p><strong>Penyakit:</strong> {{ prediction }}</p>
+        <p><strong>Akurasi:</strong> {{ '%.2f'|format(confidence) }}%</p>
         <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Gambar yang Diupload">
         {% endif %}
+
     </div>
 </body>
 </html>
